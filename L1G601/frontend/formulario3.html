@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!--
+    Tailwind CSS es un framework de utilidades para CSS que permite crear interfaces modernas y responsivas de forma rápida.
+    La siguiente línea incluye Tailwind desde un CDN, lo que permite usar sus clases directamente en el HTML para dar estilos profesionales y adaptativos al formulario.
+    Más info: https://tailwindcss.com/
+  -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Registro de Usuario</title>
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100 font-sans">
+  <div id="register-container" class="bg-white p-8 rounded-lg shadow-md w-96 text-center">
+    <h2 class="text-2xl font-semibold mb-6">Registro</h2>
+    <form id="register-form" class="space-y-4">
+      <div>
+        <label for="nombre" class="block text-left text-gray-700 mb-1">Nombre:</label>
+        <input
+          id="nombre"
+          type="text"
+          name="nombre"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+      <div>
+        <label for="email" class="block text-left text-gray-700 mb-1">Correo:</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+      <div>
+        <label for="password" class="block text-left text-gray-700 mb-1">Contraseña:</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+        <p id="password-help" class="text-xs text-gray-500 mt-1 text-left">
+          La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.
+        </p>
+      </div>
+      <div id="captcha-container" class="flex items-center space-x-2">
+        <span id="captcha-question" class="font-semibold"></span>
+        <input
+          id="captcha"
+          type="text"
+          name="captcha"
+          required
+          placeholder="Respuesta"
+          class="w-24 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+        <button type="button" id="refresh-captcha" class="text-blue-500 hover:underline text-xs">Nuevo</button>
+      </div>
+      <button
+        type="submit"
+        class="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+      >
+        Registrarse
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // Generar captcha sencillo (suma)
+    function generarCaptcha() {
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      document.getElementById('captcha-question').textContent = `${a} + ${b} =`;
+      return a + b;
+    }
+
+    let captchaResultado = generarCaptcha();
+    document.getElementById('refresh-captcha').onclick = function() {
+      captchaResultado = generarCaptcha();
+      document.getElementById('captcha').value = '';
+    };
+
+    function validarPassword(password) {
+      return (
+        password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      );
+    }
+
+    document.getElementById('register-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombre').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const captcha = document.getElementById('captcha').value.trim();
+
+      if (!validarPassword(password)) {
+        alert('La contraseña no cumple con los requisitos de seguridad.');
+        return;
+      }
+      if (parseInt(captcha) !== captchaResultado) {
+        alert('Captcha incorrecto.');
+        captchaResultado = generarCaptcha();
+        document.getElementById('captcha').value = '';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('nombre', nombre);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('captcha', captcha);
+      formData.append('captcha_esperado', captchaResultado); // Para que el backend también lo valide
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/register', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (result.message) {
+          alert(result.message);
+          document.getElementById('register-form').reset();
+          captchaResultado = generarCaptcha();
+        } else if (result.error) {
+          alert(result.error);
+        } else {
+          alert('Respuesta inesperada del servidor');
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+        console.error('Fetch error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
