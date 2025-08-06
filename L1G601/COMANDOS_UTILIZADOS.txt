@@ -1,0 +1,105 @@
+# COMANDOS ÚTILES Y SU FUNCIONAMIENTO
+
+A continuación encontrarás los comandos más importantes para trabajar con este proyecto, junto con una breve explicación de cada uno.
+
+---
+
+## 1. Comandos para la base de datos MariaDB
+
+- **Iniciar el servicio de MariaDB:**
+  sudo systemctl start mariadb
+  > Inicia el servidor de base de datos MariaDB.
+
+- **Verificar el estado de MariaDB:**
+  sudo systemctl status mariadb
+  > Muestra si el servicio de MariaDB está activo y corriendo.
+
+- **Acceder a MariaDB como root:**
+  sudo mariadb
+  > Ingresa al cliente de MariaDB con privilegios de administrador.
+
+- **Acceder a MariaDB con usuario específico:**
+  sudo mariadb -u UserRoot -p
+  > Ingresa a MariaDB con el usuario creado para el proyecto.
+
+- **Ver bases de datos existentes:**
+  SHOW DATABASES;
+
+- **Seleccionar una base de datos:**
+  USE Grupo_c;
+
+- **Ver tablas de la base de datos:**
+  SHOW TABLES;
+
+- **Ver registros de la tabla usuarios:**
+  SELECT * FROM usuarios;
+
+---
+
+## 2. Comandos para el backend (FastAPI)
+
+- **Instalar dependencias del backend:**
+  pip install --break-system-packages -r backend/requirements.txt
+  > Instala todas las librerías necesarias para el backend.
+
+- **Iniciar el backend:**
+  cd backend/mi_fastapi_env
+  uvicorn app.main:app --reload
+  > Inicia el servidor FastAPI en modo desarrollo (recarga automática).
+
+- **Detener el backend:**
+  CTRL+C
+  > Detiene el servidor Uvicorn.
+
+- **Ver la documentación interactiva de la API:**
+  http://127.0.0.1:8000/docs
+  > Accede desde el navegador para probar los endpoints.
+
+---
+
+## 3. Comandos para el frontend
+
+- **Abrir el formulario de registro:**
+  Abre el archivo frontend/formulario3.html en tu navegador web.
+  > No requiere servidor, solo abrir el archivo localmente.
+
+---
+
+## 4. Comandos para gestión de dependencias
+
+- **Instalar un paquete adicional:**
+  pip install <paquete> --break-system-packages
+  > Instala un paquete Python adicional necesario para el backend.
+
+- **Desinstalar un paquete:**
+  pip uninstall <paquete> --break-system-packages
+  > Elimina un paquete Python del entorno.
+
+---
+
+## 5. Comandos útiles de Linux
+
+- **Ver archivos y carpetas:**
+  ls
+
+- **Cambiar de directorio:**
+  cd <carpeta>
+
+- **Ver contenido de un archivo:**
+  cat <archivo>
+
+- **Editar un archivo (nano):**
+  nano <archivo>
+
+---
+
+## 6. Solución de problemas
+
+- **Si el backend no inicia, revisa la terminal y busca mensajes de error.**
+- **Si el frontend no conecta, asegúrate de que el backend esté corriendo y que la URL sea correcta.**
+- **Si hay errores de dependencias, reinstala con el comando de instalación de requirements.**
+- **Si MariaDB no conecta, revisa el estado del servicio y las credenciales en el archivo .env.**
+
+---
+
+Estos comandos te permitirán administrar, ejecutar y solucionar problemas comunes en el proyecto. 
